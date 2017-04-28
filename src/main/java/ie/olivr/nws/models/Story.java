@@ -80,6 +80,7 @@ public class Story {
 		return imgUri;
 	}
 	public void setImgUri(String imgUri) {
+		imgUri = imgUri.replace("70x70", "1920x1080");
 		this.imgUri = imgUri;
 	}
 

@@ -54,6 +54,7 @@ public class WebService {
 				response.append(inputLine);
 			}
 			in.close();
+			System.out.println(response.toString());
 			return response.toString();
 		} catch (ProtocolException e) {
 			// TODO Auto-generated catch block
@@ -88,7 +89,7 @@ public class WebService {
 				response.append(inputLine);
 			}
 			in.close();
-			return in.toString();
+			return response.toString();
 
 		} catch (IOException e) {
 			return new Gson().toJson("false");
