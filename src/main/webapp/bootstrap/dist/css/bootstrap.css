@@ -14,6 +14,7 @@ html {
 
 body {
   margin: 0;
+  background-color:#27292E;
 }
 
 article,
@@ -326,7 +327,6 @@ body {
   font-size: 1rem;
   line-height: 1.5;
   color: #373a3c;
-  background-color: #fff;
 }
 
 [tabindex="-1"]:focus {

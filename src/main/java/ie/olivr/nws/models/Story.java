@@ -77,6 +77,7 @@ public class Story {
 		this.ldt = ldt;
 	}
 	public String getImgUri() {
+		imgUri = imgUri.replace("70x70", "1920x1080");
 		return imgUri;
 	}
 	public void setImgUri(String imgUri) {
