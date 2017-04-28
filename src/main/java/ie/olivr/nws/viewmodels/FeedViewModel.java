@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.zk.ui.Executions;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -20,16 +21,15 @@ public class FeedViewModel {
 	@Init
     public void init(){
 		stories = new ArrayList<Story>();
-		String jsonInString = WebService.getInstance().makeAPIGetRequest("/getArticles/"+ps.getLoggedInUser().getId());
-		Gson gson = new Gson();
+		String jsonInString = WebService.getInstance().makeAPIGetRequest("/getArticles/5846a1a961d39700049a0429");
 		Type listType = new TypeToken<List<Story>>() {}.getType();
-		List<Story> stori = new Gson().fromJson(jsonInString, listType);
-		System.out.println(stori);
-		for (int i = 0; i < 10; i++) {
-			stories.add(new Story("BRAPP"+i));
-			
-		}
+		System.out.println(jsonInString);
+		stories = new Gson().fromJson(jsonInString, listType);
     }
+	public void navigate(String url)
+	{
+		Executions.getCurrent().sendRedirect(url, "_blank");
+	}
 	public List<Story> getStories() {
 		return stories;
 	}
