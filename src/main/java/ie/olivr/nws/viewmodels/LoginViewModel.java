@@ -2,6 +2,10 @@ package ie.olivr.nws.viewmodels;
 
 import java.io.IOException;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
@@ -30,6 +34,17 @@ public class LoginViewModel {
 	
 	@Init
     public void init(){
+		Cookie [] cookies = ((HttpServletRequest)Executions.getCurrent().getNativeRequest()).getCookies();
+		for (int i = 0; i < cookies.length; i++) {
+			if(cookies[i].getName().equals("UID"))
+			{
+				String response = WebService.getInstance().makeAPIGetRequest("getProfile"+cookies[i].getValue());
+				if(!response.toString().equals("false"))
+				{
+					navigate(response);
+				}
+			}
+		}
 	}
 	@AfterCompose
 	public void afterComposed(@ContextParam(ContextType.VIEW) Component view) {
@@ -45,8 +60,7 @@ public class LoginViewModel {
 		String response = WebService.getInstance().makeAPIPostRequest("login", json);
 		if(!response.toString().equals("false"))
 		{
-			PersonService.getInstance().setLoggedInUser(new AuthenticatedUser(username, password, response.toString()));
-			Executions.sendRedirect("Feed.zul");
+			navigate(response);
 		}
 	}
 	public void register()
@@ -54,9 +68,22 @@ public class LoginViewModel {
 		Person p = new Person(regUsername, regPassword);
 		Gson gson = new Gson();
 		String json = gson.toJson(p);
-		WebService.getInstance().makeAPIPostRequest("addProfile", json);
+		String response = WebService.getInstance().makeAPIPostRequest("addProfile", json);
+		if(!response.toString().equals("false"))
+		{
+			navigate(response);
+		}
 		
 	}
+	public void navigate(String response)
+	{
+		PersonService.getInstance().setLoggedInUser(new AuthenticatedUser(username, password, response.toString()));
+		Executions.sendRedirect("Feed.zul");
+		HttpServletResponse res = (HttpServletResponse)Executions.getCurrent().getNativeResponse();
+		Cookie userCookie = new Cookie("UID", response.toString());
+		res.addCookie(userCookie);
+	}
+	
 	public void showRegister()
 	{
 		regWindow.setVisible(true);

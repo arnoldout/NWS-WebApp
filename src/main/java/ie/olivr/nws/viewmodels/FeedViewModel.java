@@ -19,46 +19,60 @@ import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
 import ie.olivr.nws.models.Story;
+import ie.olivr.nws.services.PersonService;
 import ie.olivr.nws.services.WebService;
 
 public class FeedViewModel {
-	//private PersonService ps = PersonService.getInstance();
+	// private PersonService ps = PersonService.getInstance();
 	private List<Story> stories;
 	private Queue<Story> allStories;
-	
-	@Init
-    public void init(){
-		stories = new ArrayList<Story>();
-		String jsonInString = WebService.getInstance().makeAPIGetRequest("getArticles/59078dd05ccca70004e91f99");
-		Type listType = new TypeToken<Queue<Story>>() {}.getType();
-		//Gson gson = new GsonBuilder().registerTypeAdapter(ObjectId.class, new ObjectIdTypeAdapter()).create();
-		
-		JsonDeserializer<ObjectId> des = new JsonDeserializer<ObjectId>() {
 
-            public ObjectId deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
-                return new ObjectId(je.getAsJsonObject().get("$oid").getAsString());
-            }
-        };
-        if(!jsonInString.equals("false"))
-        {
-	        Gson gson = new GsonBuilder().registerTypeAdapter(ObjectId.class, des).create();
-	        allStories = gson.fromJson(jsonInString, listType);
-			for (int i = 0; i < 10; i++) {
-				stories.add(allStories.poll());
+	@Init
+	public void init() {
+		if (PersonService.getInstance().getLoggedInUser() != null) {
+			stories = new ArrayList<Story>();
+			String jsonInString = WebService.getInstance()
+					.makeAPIGetRequest("getArticles/" + PersonService.getInstance().getLoggedInUser().getId());
+			Type listType = new TypeToken<Queue<Story>>() {
+			}.getType();
+			// Gson gson = new GsonBuilder().registerTypeAdapter(ObjectId.class,
+			// new ObjectIdTypeAdapter()).create();
+
+			JsonDeserializer<ObjectId> des = new JsonDeserializer<ObjectId>() {
+
+				public ObjectId deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+						throws JsonParseException {
+					return new ObjectId(je.getAsJsonObject().get("$oid").getAsString());
+				}
+			};
+			if (!jsonInString.equals("false")) {
+				Gson gson = new GsonBuilder().registerTypeAdapter(ObjectId.class, des).create();
+				allStories = gson.fromJson(jsonInString, listType);
+				int count = 0;
+				while (!allStories.isEmpty() && count < 10) {
+					stories.add(allStories.poll());
+					count++;
+				}
 			}
-        }
-    }
-	public void navigate(Story st)
-	{
-		WebService.getInstance().makeAPIGetRequest("readArticle/59078dd05ccca70004e91f99/"+st.get_id());
-		Executions.getCurrent().sendRedirect(st.getUri(), "_blank");
-		for (int i = 0; i < st.getCategories().size(); i++) {
-			WebService.getInstance().makeAPIGetRequest("addLike/" + "59078dd05ccca70004e91f99"+ "/"+st.getCategories().get(i));
+		}
+		else{
+			Executions.sendRedirect("index.zul");
 		}
 	}
+
+	public void navigate(Story st) {
+		WebService.getInstance().makeAPIGetRequest("readArticle/"+PersonService.getInstance().getLoggedInUser().getId()+"/" + st.get_id());
+		Executions.getCurrent().sendRedirect(st.getUri(), "_blank");
+		for (int i = 0; i < st.getCategories().size(); i++) {
+			WebService.getInstance()
+					.makeAPIGetRequest("addLike/" + PersonService.getInstance().getLoggedInUser().getId() + "/" + st.getCategories().get(i));
+		}
+	}
+
 	public List<Story> getStories() {
 		return stories;
 	}
+
 	public void setStories(List<Story> stories) {
 		this.stories = stories;
 	}
