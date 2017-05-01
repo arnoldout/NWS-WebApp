@@ -60,12 +60,14 @@ public class FeedViewModel {
 	}
 
 	public void navigate(Story st) {
+		stories.remove(st);
 		WebService.getInstance().makeAPIGetRequest("readArticle/"+PersonService.getInstance().getLoggedInUser().getId()+"/" + st.get_id());
 		Executions.getCurrent().sendRedirect(st.getUri(), "_blank");
 		for (int i = 0; i < st.getCategories().size(); i++) {
 			WebService.getInstance()
 					.makeAPIGetRequest("addLike/" + PersonService.getInstance().getLoggedInUser().getId() + "/" + st.getCategories().get(i));
 		}
+		stories.add(allStories.poll());
 	}
 
 	public List<Story> getStories() {
