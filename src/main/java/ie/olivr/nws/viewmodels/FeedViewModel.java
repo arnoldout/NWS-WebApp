@@ -29,7 +29,7 @@ public class FeedViewModel {
 	@Init
     public void init(){
 		stories = new ArrayList<Story>();
-		String jsonInString = WebService.getInstance().makeAPIGetRequest("getArticles/5906792f4e62ed0004289900");
+		String jsonInString = WebService.getInstance().makeAPIGetRequest("getArticles/59078dd05ccca70004e91f99");
 		Type listType = new TypeToken<Queue<Story>>() {}.getType();
 		//Gson gson = new GsonBuilder().registerTypeAdapter(ObjectId.class, new ObjectIdTypeAdapter()).create();
 		
@@ -39,19 +39,21 @@ public class FeedViewModel {
                 return new ObjectId(je.getAsJsonObject().get("$oid").getAsString());
             }
         };
-
-        Gson gson = new GsonBuilder().registerTypeAdapter(ObjectId.class, des).create();
-        allStories = gson.fromJson(jsonInString, listType);
-		for (int i = 0; i < 10; i++) {
-			stories.add(allStories.poll());
-		}
+        if(!jsonInString.equals("false"))
+        {
+	        Gson gson = new GsonBuilder().registerTypeAdapter(ObjectId.class, des).create();
+	        allStories = gson.fromJson(jsonInString, listType);
+			for (int i = 0; i < 10; i++) {
+				stories.add(allStories.poll());
+			}
+        }
     }
 	public void navigate(Story st)
 	{
-		WebService.getInstance().makeAPIGetRequest("readArticle/5906792f4e62ed0004289900/"+st.get_id());
+		WebService.getInstance().makeAPIGetRequest("readArticle/59078dd05ccca70004e91f99/"+st.get_id());
 		Executions.getCurrent().sendRedirect(st.getUri(), "_blank");
 		for (int i = 0; i < st.getCategories().size(); i++) {
-			WebService.getInstance().makeAPIGetRequest("addLike/" + "5906792f4e62ed0004289900"+ "/"+st.getCategories().get(i));
+			WebService.getInstance().makeAPIGetRequest("addLike/" + "59078dd05ccca70004e91f99"+ "/"+st.getCategories().get(i));
 		}
 	}
 	public List<Story> getStories() {

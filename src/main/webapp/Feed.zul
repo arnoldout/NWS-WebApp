@@ -2,6 +2,7 @@
     href="/bootstrap/dist/css/bootstrap.css" ?>
 <?link rel="stylesheet" type="text/css"
     href="/styles/main.css" ?>
+    <?page title="News Feed"?> 
 <zk xmlns:h="xhtml" contentStyle="overflow:auto" width="100%" height="100%">
 		<div width="100%" height="100%" class="body container-fluid"
 		viewModel="@id('vm')@init('ie.olivr.nws.viewmodels.FeedViewModel')" apply="org.zkoss.bind.BindComposer" >
