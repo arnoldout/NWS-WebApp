@@ -3,32 +3,56 @@ package ie.olivr.nws.viewmodels;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
+import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
 import ie.olivr.nws.models.Story;
-import ie.olivr.nws.services.PersonService;
 import ie.olivr.nws.services.WebService;
 
 public class FeedViewModel {
-	private PersonService ps = PersonService.getInstance();
+	//private PersonService ps = PersonService.getInstance();
 	private List<Story> stories;
+	private Queue<Story> allStories;
 	
 	@Init
     public void init(){
 		stories = new ArrayList<Story>();
-		String jsonInString = WebService.getInstance().makeAPIGetRequest("/getArticles/5846a1a961d39700049a0429");
-		Type listType = new TypeToken<List<Story>>() {}.getType();
-		System.out.println(jsonInString);
-		stories = new Gson().fromJson(jsonInString, listType);
+		String jsonInString = WebService.getInstance().makeAPIGetRequest("getArticles/5906792f4e62ed0004289900");
+		Type listType = new TypeToken<Queue<Story>>() {}.getType();
+		//Gson gson = new GsonBuilder().registerTypeAdapter(ObjectId.class, new ObjectIdTypeAdapter()).create();
+		
+		JsonDeserializer<ObjectId> des = new JsonDeserializer<ObjectId>() {
+
+            public ObjectId deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
+                return new ObjectId(je.getAsJsonObject().get("$oid").getAsString());
+            }
+        };
+
+        Gson gson = new GsonBuilder().registerTypeAdapter(ObjectId.class, des).create();
+        allStories = gson.fromJson(jsonInString, listType);
+		for (int i = 0; i < 10; i++) {
+			stories.add(allStories.poll());
+		}
     }
-	public void navigate(String url)
+	public void navigate(Story st)
 	{
-		Executions.getCurrent().sendRedirect(url, "_blank");
+		WebService.getInstance().makeAPIGetRequest("readArticle/5906792f4e62ed0004289900/"+st.get_id());
+		Executions.getCurrent().sendRedirect(st.getUri(), "_blank");
+		for (int i = 0; i < st.getCategories().size(); i++) {
+			WebService.getInstance().makeAPIGetRequest("addLike/" + "5906792f4e62ed0004289900"+ "/"+st.getCategories().get(i));
+		}
 	}
 	public List<Story> getStories() {
 		return stories;

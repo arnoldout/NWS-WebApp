@@ -2,7 +2,15 @@ package ie.olivr.nws.viewmodels;
 
 import java.io.IOException;
 
+import org.zkoss.bind.annotation.AfterCompose;
+import org.zkoss.bind.annotation.ContextParam;
+import org.zkoss.bind.annotation.ContextType;
+import org.zkoss.bind.annotation.Init;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.select.Selectors;
+import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.Window;
 
 import com.google.gson.Gson;
 
@@ -14,7 +22,19 @@ import ie.olivr.nws.services.WebService;
 public class LoginViewModel {
 	private String username = "";
 	private String password = "";
-	private PersonService ps = PersonService.getInstance();
+	private String regUsername = "";
+	private String regPassword = "";
+	
+
+	@Wire private Window regWindow;
+	
+	@Init
+    public void init(){
+	}
+	@AfterCompose
+	public void afterComposed(@ContextParam(ContextType.VIEW) Component view) {
+		Selectors.wireComponents(view, this, false);
+	}
 	
 	public void login() throws IOException
 	{
@@ -28,6 +48,18 @@ public class LoginViewModel {
 			PersonService.getInstance().setLoggedInUser(new AuthenticatedUser(username, password, response.toString()));
 			Executions.sendRedirect("Feed.zul");
 		}
+	}
+	public void register()
+	{
+		Person p = new Person(regUsername, regPassword);
+		Gson gson = new Gson();
+		String json = gson.toJson(p);
+		WebService.getInstance().makeAPIPostRequest("addProfile", json);
+		
+	}
+	public void showRegister()
+	{
+		regWindow.setVisible(true);
 	}
 	
 	public String getUsername() {
@@ -44,6 +76,18 @@ public class LoginViewModel {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public String getRegPassword() {
+		return regPassword;
+	}
+	public void setRegPassword(String regPassword) {
+		this.regPassword = regPassword;
+	}
+	public String getRegUsername() {
+		return regUsername;
+	}
+	public void setRegUsername(String regUsername) {
+		this.regUsername = regUsername;
 	}
 
 }

@@ -1,7 +1,7 @@
 <?link rel="stylesheet" type="text/css"
     href="/bootstrap/dist/css/bootstrap.css" ?>
 <zk xmlns:h="xhtml">
-	<window apply="org.zkoss.bind.BindComposer" class="body"
+	<window class="body"
 		width="100%" height="100%"
 		viewModel="@id('vm')@init('ie.olivr.nws.viewmodels.LoginViewModel')">
 		<div width="100%" height="100%" class="container-fluid">
@@ -11,9 +11,30 @@
 				</div>
 				<div class="form-group">
 					<textbox placeholder="Password" value="@save(vm.password)" class="form-control" type="password"/>
-					<button class="form-control" onClick="@command(vm.login())" label="Login"/>
+					<button style="float:left" width="50%" class="form-control" onClick="@command(vm.login())" label="Login"/>
+					<button style="float:left" width="50%" class="form-control" onClick="@command(vm.showRegister())" label="Register"/>
 				</div>
 			</div>
+			<window class="homepage-article content-card" id="regWindow"
+					border="normal" width="375px" height="150px" position="center"
+					mode="popup" visible="false"
+					contentStyle="background:transparent">
+			<div class="container">
+				<div class="form-group">
+					<textbox placeholder="Username"
+						value="@save(vm.regPassword)" class="form-control" />
+				</div>
+				<div class="form-group">
+					<textbox placeholder="Password"
+						value="@save(vm.regUsername)" class="form-control" type="password" />
+					<button class="form-control"
+						onClick="@command(vm.register())" label="Register" />
+				</div>
+			</div>
+
+		</window>
 		</div>
+		
 	</window>
+	
 </zk>

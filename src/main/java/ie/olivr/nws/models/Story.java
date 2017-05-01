@@ -1,14 +1,25 @@
 package ie.olivr.nws.models;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.bson.Document;
 import org.bson.types.ObjectId;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+@JsonIgnoreProperties
 //Story object is a news article
 public class Story {
-	
+
 	//Mongo ID
 	private ObjectId _id;
 	//title of article
@@ -21,9 +32,12 @@ public class Story {
     private List<String> categories = new ArrayList<String>();
     //date story created in this program
     private long ldt;
-    //associated image to article
-    private String imgUri;
     
+	//associated image to article
+    private String imgUri;
+	public Story() {
+		super();
+	}
     public Story(String uri) {
 		super();
 		this.uri = uri;
@@ -31,7 +45,18 @@ public class Story {
 		Calendar c = Calendar.getInstance();
 		this.setLdt(c.getTime().getTime());
 	} 
-    
+    @SuppressWarnings("unchecked")
+	public Story(Document d)
+	{
+//		this._id = (ObjectId)d.get("_id");
+//		this.title = (String) d.get("title");
+//		this.description = (String)d.get("description");
+//		this.uri = (String)d.get("uri");
+//		this.categories = (List<String>)d.get("categories");
+//		this.ldt = (Long)d.get("ldt");
+//		this.imgUri = (String)d.get("imgUri");
+//    	this._id = d.get("_id");
+	}
 	public Story(ObjectId _id, String title, String description, String uri, List<String> categories, long ldt,
 			String imgUri) {
 		super();
