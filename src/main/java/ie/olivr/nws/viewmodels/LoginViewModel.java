@@ -35,10 +35,10 @@ public class LoginViewModel {
 	@Init
     public void init(){
 		Cookie [] cookies = ((HttpServletRequest)Executions.getCurrent().getNativeRequest()).getCookies();
-		for (int i = 0; i < cookies.length; i++) {
-			if(cookies[i].getName().equals("UID"))
+		for (Cookie c : cookies) {
+			if(c.getName().equals("UID"))
 			{
-				String response = WebService.getInstance().makeAPIGetRequest("getProfile"+cookies[i].getValue());
+				String response = WebService.getInstance().makeAPIGetRequest("getProfile"+c.getValue());
 				if(!response.toString().equals("false"))
 				{
 					navigate(response);
