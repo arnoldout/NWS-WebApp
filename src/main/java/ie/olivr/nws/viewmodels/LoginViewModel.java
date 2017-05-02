@@ -35,12 +35,12 @@ public class LoginViewModel {
 	@Init
     public void init(){
 		Cookie [] cookies = ((HttpServletRequest)Executions.getCurrent().getNativeRequest()).getCookies();
-		for (Cookie c : cookies) {
-			if(c.getName().equals("UID"))
-			{
-				String response = WebService.getInstance().makeAPIGetRequest("getProfile"+c.getValue());
-				if(!response.toString().equals("false"))
+		if(cookies!=null)
+		{
+			for (Cookie c : cookies) {
+				if(c.getName().equals("UID"))
 				{
+					String response = WebService.getInstance().makeAPIGetRequest("getProfile/"+c.getValue());
 					navigate(response);
 				}
 			}
@@ -58,10 +58,7 @@ public class LoginViewModel {
 		Gson gson = new Gson();
 		String json = gson.toJson(p);
 		String response = WebService.getInstance().makeAPIPostRequest("login", json);
-		if(!response.toString().equals("false"))
-		{
-			navigate(response);
-		}
+		navigate(response);
 	}
 	public void register()
 	{
@@ -69,19 +66,21 @@ public class LoginViewModel {
 		Gson gson = new Gson();
 		String json = gson.toJson(p);
 		String response = WebService.getInstance().makeAPIPostRequest("addProfile", json);
-		if(!response.toString().equals("false"))
-		{
-			navigate(response);
-		}
+		navigate(response);
 		
 	}
 	public void navigate(String response)
 	{
-		PersonService.getInstance().setLoggedInUser(new AuthenticatedUser(username, password, response.toString()));
-		Executions.sendRedirect("Feed.zul");
-		HttpServletResponse res = (HttpServletResponse)Executions.getCurrent().getNativeResponse();
-		Cookie userCookie = new Cookie("UID", response.toString());
-		res.addCookie(userCookie);
+		response = response.replaceAll("^\"|\"$", "");
+		if(!response.equals("false"))
+		{
+			//hardcoded id, fix later
+			PersonService.getInstance().setLoggedInUser(new AuthenticatedUser(username, password, "59078dd05ccca70004e91f99"));
+			HttpServletResponse res = (HttpServletResponse)Executions.getCurrent().getNativeResponse();
+			Cookie userCookie = new Cookie("UID", response.toString());
+			res.addCookie(userCookie);
+			Executions.sendRedirect("Feed.zul");
+		}
 	}
 	
 	public void showRegister()

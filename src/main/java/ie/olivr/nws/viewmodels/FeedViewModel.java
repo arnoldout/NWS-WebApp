@@ -6,8 +6,13 @@ import java.util.List;
 import java.util.Queue;
 
 import org.bson.types.ObjectId;
+import org.zkoss.bind.annotation.ContextParam;
+import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.annotation.Command;
+import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zk.ui.event.SwipeEvent;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -53,21 +58,29 @@ public class FeedViewModel {
 					count++;
 				}
 			}
-		}
-		else{
+		} else {
 			Executions.sendRedirect("index.zul");
 		}
 	}
 
 	public void navigate(Story st) {
 		stories.remove(st);
-		WebService.getInstance().makeAPIGetRequest("readArticle/"+PersonService.getInstance().getLoggedInUser().getId()+"/" + st.get_id());
+		WebService.getInstance().makeAPIGetRequest(
+				"readArticle/" + PersonService.getInstance().getLoggedInUser().getId() + "/" + st.get_id());
 		Executions.getCurrent().sendRedirect(st.getUri(), "_blank");
 		for (int i = 0; i < st.getCategories().size(); i++) {
-			WebService.getInstance()
-					.makeAPIGetRequest("addLike/" + PersonService.getInstance().getLoggedInUser().getId() + "/" + st.getCategories().get(i));
+			WebService.getInstance().makeAPIGetRequest("addLike/"
+					+ PersonService.getInstance().getLoggedInUser().getId() + "/" + st.getCategories().get(i));
 		}
 		stories.add(allStories.poll());
+	}
+
+	public void syst(Story st) 
+	{
+		for (int i = 0; i < st.getCategories().size(); i++) {
+			WebService.getInstance().makeAPIGetRequest("remLike/"
+					+ PersonService.getInstance().getLoggedInUser().getId() + "/" + st.getCategories().get(i));
+		}
 	}
 
 	public List<Story> getStories() {
