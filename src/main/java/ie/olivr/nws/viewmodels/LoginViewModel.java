@@ -40,8 +40,8 @@ public class LoginViewModel {
 			for (Cookie c : cookies) {
 				if(c.getName().equals("UID"))
 				{
-					String response = WebService.getInstance().makeAPIGetRequest("getProfile/"+c.getValue());
-					navigate(response);
+					navigate(c.getValue());
+					break;
 				}
 			}
 		}
@@ -58,6 +58,9 @@ public class LoginViewModel {
 		Gson gson = new Gson();
 		String json = gson.toJson(p);
 		String response = WebService.getInstance().makeAPIPostRequest("login", json);
+		HttpServletResponse res = (HttpServletResponse)Executions.getCurrent().getNativeResponse();
+		Cookie userCookie = new Cookie("UID", response);
+		res.addCookie(userCookie);
 		navigate(response);
 	}
 	public void register()
@@ -66,6 +69,9 @@ public class LoginViewModel {
 		Gson gson = new Gson();
 		String json = gson.toJson(p);
 		String response = WebService.getInstance().makeAPIPostRequest("addProfile", json);
+		HttpServletResponse res = (HttpServletResponse)Executions.getCurrent().getNativeResponse();
+		Cookie userCookie = new Cookie("UID", response);
+		res.addCookie(userCookie);
 		navigate(response);
 		
 	}
@@ -74,11 +80,7 @@ public class LoginViewModel {
 		response = response.replaceAll("^\"|\"$", "");
 		if(!response.equals("false"))
 		{
-			//hardcoded id, fix later
-			PersonService.getInstance().setLoggedInUser(new AuthenticatedUser(username, password, "59078dd05ccca70004e91f99"));
-			HttpServletResponse res = (HttpServletResponse)Executions.getCurrent().getNativeResponse();
-			Cookie userCookie = new Cookie("UID", response.toString());
-			res.addCookie(userCookie);
+			PersonService.getInstance().setLoggedInUser(new AuthenticatedUser(username, password, response));
 			Executions.sendRedirect("Feed.zul");
 		}
 	}

@@ -22,10 +22,11 @@
 								<!-- <h:object type="text/html" data="${each.uri}" width="800px" height="600px"
 								 style="overflow:auto;border:5px ridge blue"/> -->
 							</div>
-							<button onClick="@command(vm.syst(each))" width="100%" label="FAKE NEWS"/>
+							<button onClick="@command(vm.dislikeStory(each))" width="100%" label="FAKE NEWS"/>
 						</div>
 					</row>
 				</template>
 			</grid>
+			<button label="Next" width="100%" onClick="@command(vm.pollNewStories())" class="btn"/>
 		</div>
 </zk>
