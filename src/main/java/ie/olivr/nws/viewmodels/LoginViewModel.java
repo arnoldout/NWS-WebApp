@@ -3,13 +3,11 @@ package ie.olivr.nws.viewmodels;
 import java.io.IOException;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
-import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.select.Selectors;
@@ -32,20 +30,7 @@ public class LoginViewModel {
 
 	@Wire private Window regWindow;
 	
-	@Init
-    public void init(){
-		Cookie [] cookies = ((HttpServletRequest)Executions.getCurrent().getNativeRequest()).getCookies();
-		if(cookies!=null)
-		{
-			for (Cookie c : cookies) {
-				if(c.getName().equals("UID"))
-				{
-					navigate(c.getValue());
-					break;
-				}
-			}
-		}
-	}
+	
 	@AfterCompose
 	public void afterComposed(@ContextParam(ContextType.VIEW) Component view) {
 		Selectors.wireComponents(view, this, false);
