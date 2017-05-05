@@ -33,43 +33,49 @@ public class FeedViewModel {
 
 	@Init
 	public void init() {
-		if (PersonService.getInstance().getLoggedInUser() != null) {
-			stories = new ArrayList<Story>();
-			String jsonInString = WebService.getInstance()
-					.makeAPIGetRequest("getArticles/" + PersonService.getInstance().getLoggedInUser().getId());
-			Type listType = new TypeToken<Queue<Story>>() {
-			}.getType();
-			// Gson gson = new GsonBuilder().registerTypeAdapter(ObjectId.class,
-			// new ObjectIdTypeAdapter()).create();
-
-			JsonDeserializer<ObjectId> des = new JsonDeserializer<ObjectId>() {
-
-				public ObjectId deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-						throws JsonParseException {
-					return new ObjectId(je.getAsJsonObject().get("$oid").getAsString());
-				}
-			};
-			if (!jsonInString.equals("false")) {
-				Gson gson = new GsonBuilder().registerTypeAdapter(ObjectId.class, des).create();
-				allStories = gson.fromJson(jsonInString, listType);
-				pollNewStories();
-			}
-		} else {
+		// check for identification cookie
+		if (PersonService.getInstance().getLoggedInUser() == null) {
 			Cookie[] cookies = ((HttpServletRequest) Executions.getCurrent().getNativeRequest()).getCookies();
 			if (cookies != null) {
 				for (Cookie c : cookies) {
 					if (c.getName().equals("UID")) {
+						// store user in ps
 						PersonService.getInstance().setLoggedInUser(new AuthenticatedUser("", "", c.getValue()));
 						break;
 					}
 				}
-				if (PersonService.getInstance().getLoggedInUser() == null)
-				{
+				if (PersonService.getInstance().getLoggedInUser() == null) {
 					Executions.sendRedirect("index.zul");
 				}
 			}
+			// user now logged it, so get stories
+			generateStories();
 
 		}
+	}
+
+	public void generateStories() {
+		stories = new ArrayList<Story>();
+		String jsonInString = WebService.getInstance()
+				.makeAPIGetRequest("getArticles/" + PersonService.getInstance().getLoggedInUser().getId());
+		Type listType = new TypeToken<Queue<Story>>() {
+		}.getType();
+		// Gson gson = new GsonBuilder().registerTypeAdapter(ObjectId.class,
+		// new ObjectIdTypeAdapter()).create();
+
+		JsonDeserializer<ObjectId> des = new JsonDeserializer<ObjectId>() {
+
+			public ObjectId deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
+					throws JsonParseException {
+				return new ObjectId(je.getAsJsonObject().get("$oid").getAsString());
+			}
+		};
+		if (!jsonInString.equals("false")) {
+			Gson gson = new GsonBuilder().registerTypeAdapter(ObjectId.class, des).create();
+			allStories = gson.fromJson(jsonInString, listType);
+			pollNewStories();
+		}
+
 	}
 
 	public void pollNewStories() {
@@ -82,17 +88,18 @@ public class FeedViewModel {
 	}
 
 	public void navigate(Story st) {
+		Executions.getCurrent().sendRedirect(st.getUri(), "_blank");
+		//remove story from view
 		removeStory(st);
-		// WebService.getInstance().makeAPIGetRequest(
-		// "readArticle/" +
-		// PersonService.getInstance().getLoggedInUser().getId() + "/" +
-		// st.get_id());
-		// Executions.getCurrent().sendRedirect(st.getUri(), "_blank");
-		// for (int i = 0; i < st.getCategories().size(); i++) {
-		// WebService.getInstance().makeAPIGetRequest("addLike/"
-		// + PersonService.getInstance().getLoggedInUser().getId() + "/" +
-		// st.getCategories().get(i));
-		// }
+		WebService.getInstance().makeAPIGetRequest(
+				"readArticle/" + PersonService.getInstance().getLoggedInUser().getId() + "/" + st.get_id());
+		
+		
+		
+		for (int i = 0; i < st.getCategories().size(); i++) {
+			WebService.getInstance().makeAPIGetRequest("addLike/"
+					+ PersonService.getInstance().getLoggedInUser().getId() + "/" + st.getCategories().get(i));
+		}
 		if (!allStories.isEmpty())
 			stories.add(allStories.poll());
 	}
