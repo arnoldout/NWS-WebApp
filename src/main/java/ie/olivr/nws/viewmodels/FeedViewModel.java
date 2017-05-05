@@ -46,6 +46,7 @@ public class FeedViewModel {
 				}
 				if (PersonService.getInstance().getLoggedInUser() == null) {
 					Executions.sendRedirect("index.zul");
+					return;
 				}
 			}
 			// user now logged it, so get stories
