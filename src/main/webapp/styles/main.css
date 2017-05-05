@@ -10,15 +10,20 @@
 	background: transparent !important;
 	border: none !important;
 }
-
+@font-face {
+    font-family: "Old English";
+    src: url(../resources/OLDENGL.TTF) format("truetype");
+}
 html {
 	font-family: sans-serif;
 	-ms-text-size-adjust: 100%;
 	-webkit-text-size-adjust: 100%;
+	background-color:#3A3335;
 }
 
 body {
 	position: absolute;
+	background-color:#3A3335;
 	width: 100%;
 }
 

@@ -1,34 +1,49 @@
 <?link rel="stylesheet" type="text/css"
-    href="/bootstrap/dist/css/bootstrap.css" ?>
+    href="/bulma-0.4.1/css/bulma.css" ?>
+<?page title="News Feed"?>
 <?link rel="stylesheet" type="text/css"
     href="/styles/main.css" ?>
-<?link rel="stylesheet" href="/Font Awesome/css/font-awesome.min.css">
-<?page title="News Feed"?>
 <?link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"?>
-<?link rel="icon" type="image/x-icon" href="/favicon.ico"?> 
-<zk xmlns:h="xhtml" contentStyle="overflow:auto" width="100%" height="100%">
-		<div width="100%" height="100%" class="body container-fluid"
-		viewModel="@id('vm')@init('ie.olivr.nws.viewmodels.FeedViewModel')" apply="org.zkoss.bind.BindComposer" >
-			
-			<grid model="@bind(vm.stories)" width="100%" class="list-group">
-				<template name="model">
-					<row>
-						<div class="card" onClick="@command(vm.navigate(each))">
-							<div width="100%" class="card-block">
-								<label class="lead card-title text-center" value="${each.title}" />
-							</div>
-							<div width="100%" class="card-block">
-								<image hflex="3" style="float:left;" src="${each.imgUri}" />
-								<label hflex="5" multiline="false" height="100%" style="float:left;" class="list-group-item" 
-								value="${each.description}" />
-								<!-- <h:object type="text/html" data="${each.uri}" width="800px" height="600px"
-								 style="overflow:auto;border:5px ridge blue"/> -->
-							</div>
-							<button onClick="@command(vm.dislikeStory(each))" width="100%" label="FAKE NEWS"/>
+<?link rel="icon" type="image/x-icon" href="/favicon.ico"?>
+<zk xmlns:h="xhtml" contentStyle="overflow:auto" width="100%"
+	height="100%">
+	<div class="nav" style="background-color:#DB2B39" width="100%">
+		<h:p class="nav-center title is-1"
+			style="font-family:'Old English';color:white">
+			Daily Feed
+		</h:p>
+	</div>
+	<h:section width="90%" height="100%" class="section container"
+		viewModel="@id('vm')@init('ie.olivr.nws.viewmodels.FeedViewModel')"
+		apply="org.zkoss.bind.BindComposer">
+		<grid model="@bind(vm.stories)" width="100%" class="list-group">
+			<template name="model">
+				<row>
+					<div class="card"
+						onClick="@command(vm.navigate(each))">
+						<div width="100%" class="card-header">
+							<label class="card-header-title"
+								value="${each.title}" />
 						</div>
-					</row>
-				</template>
-			</grid>
-			<button label="Next" width="100%" onClick="@command(vm.pollNewStories())" class="btn"/>
-		</div>
+						<div width="100%" class="card-content">
+							<image hflex="3" style="float:left;"
+								class="card-image" src="${each.imgUri}" />
+							<label hflex="5" multiline="false"
+								height="100%" style="float:left;" class="card-content"
+								value="${each.description}" />
+						</div>
+						<div class="card-footer" width="100%">
+							<h:a class="button is-large"
+								style="width:100%;background-color:#429EA6;color:white" onClick="@command(vm.dislikeStory(each))">
+								Fake News
+							</h:a>
+						</div>
+					</div>
+				</row>
+			</template>
+		</grid>
+	</h:section>
+	<h:footer style="background-color:#3A3335" class="footer" width="100%">
+		<h:a style="width:10%;" onClick="@command(vm.pollNewStories())" class="is-pulled-right button is-danger is-large">Next</h:a>
+	</h:footer>
 </zk>
