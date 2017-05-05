@@ -2,23 +2,31 @@
     href="/bootstrap/dist/css/bootstrap.css" ?>
 <?link rel="stylesheet" type="text/css"
     href="/styles/main.css" ?>
-    
+
 <?link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"?>
-<?link rel="icon" type="image/x-icon" href="/favicon.ico"?> 
+<?link rel="icon" type="image/x-icon" href="/favicon.ico"?>
 <zk xmlns:h="xhtml">
-	<div width="100%" height="100%"
-		style="background-color:#27292E" viewModel="@id('vm')@init('ie.olivr.nws.viewmodels.LoginViewModel')">
+	<div width="100%" height="100%" style="background-color:#333333"
+		viewModel="@id('vm')@init('ie.olivr.nws.viewmodels.LoginViewModel')">
 		<div width="100%" height="100%" class="container-fluid">
-			<div width="100%" height="100%" class="container">
-				<image src="resources/The Daily Feed Logo.png"
-					width="100%" height="45%" />
+			<div width="100%" height="100%" class="content">
+				<span width="100%" class="is-large">
+					<h:h1  style="text-align:center;width:100%;color:red;font-family:'Old English';">
+						The Daily Feed
+					</h:h1>
+					<h:h3 style="text-align:center;width:100%;color:white;font-family:'Old English';">
+						News for you
+					</h:h3>
+				</span>
 				<div class="form-group">
 					<textbox placeholder="Username"
-						value="@bind(vm.username) @save(vm.username, before='launch')" class="form-control" />
+						value="@bind(vm.username) @save(vm.username, before='launch')"
+						class="form-control" />
 				</div>
 				<div class="form-group">
-					<textbox placeholder="Password"
-						class="form-control" value="@bind(vm.password) @save(vm.password, before='launch')" type="password" />
+					<textbox placeholder="Password" class="form-control"
+						value="@bind(vm.password) @save(vm.password, before='launch')"
+						type="password" />
 					<button style="float:left" width="50%"
 						class="form-control" onClick="@command(vm.login())" label="Login" />
 					<button style="float:left" width="50%"

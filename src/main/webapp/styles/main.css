@@ -7,7 +7,7 @@
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 .z-row-content, .z-row-inner, .z-rows, .z-row, .z-grid-odd, .z-grid-body,
 	.z-grid-header, .z-cell {
-	background: transparent !important;
+	background: white;	
 	border: none !important;
 }
 @font-face {
@@ -18,12 +18,12 @@ html {
 	font-family: sans-serif;
 	-ms-text-size-adjust: 100%;
 	-webkit-text-size-adjust: 100%;
-	background-color:#3A3335;
+	background-color:#333333;
 }
 
 body {
 	position: absolute;
-	background-color:#3A3335;
+	background-color:#333333;
 	width: 100%;
 }
 
@@ -7693,7 +7693,7 @@ body {
 }
 
 h1 {
-	font-size: 3em;
+	font-size: 8em;
 }
 
 .z-label {
@@ -7720,8 +7720,7 @@ h2 {
 }
 
 h3 {
-	font-size: 1.2em;
-	color: black;
+	font-size: 3em;
 }
 
 footer {
