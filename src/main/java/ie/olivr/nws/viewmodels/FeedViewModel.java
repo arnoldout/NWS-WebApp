@@ -49,10 +49,9 @@ public class FeedViewModel {
 					return;
 				}
 			}
-			// user now logged it, so get stories
-			generateStories();
-
 		}
+		// user now logged it, so get stories
+		generateStories();
 	}
 
 	public void generateStories() {
@@ -90,13 +89,11 @@ public class FeedViewModel {
 
 	public void navigate(Story st) {
 		Executions.getCurrent().sendRedirect(st.getUri(), "_blank");
-		//remove story from view
+		// remove story from view
 		removeStory(st);
 		WebService.getInstance().makeAPIGetRequest(
 				"readArticle/" + PersonService.getInstance().getLoggedInUser().getId() + "/" + st.get_id());
-		
-		
-		
+
 		for (int i = 0; i < st.getCategories().size(); i++) {
 			WebService.getInstance().makeAPIGetRequest("addLike/"
 					+ PersonService.getInstance().getLoggedInUser().getId() + "/" + st.getCategories().get(i));
