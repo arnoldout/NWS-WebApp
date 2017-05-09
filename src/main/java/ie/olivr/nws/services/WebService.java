@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 
 public class WebService {
 
+	private String baseUri = "https://nws-mongo-api.herokuapp.com/";
 	private static WebService ws = new WebService();
 
 	private WebService() {
@@ -25,7 +26,7 @@ public class WebService {
 
 		// add request header
 		try {
-			String url = "http://nws-mongo-api.herokuapp.com/" + uri;
+			String url = baseUri + uri;
 			URL obj = new URL(url);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
@@ -69,8 +70,7 @@ public class WebService {
 
 	public String makeAPIGetRequest(String uri) {
 		try {
-			String url = "http://nws-mongo-api.herokuapp.com/" + uri;
-
+			String url = baseUri + uri;
 			URL obj = new URL(url);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
