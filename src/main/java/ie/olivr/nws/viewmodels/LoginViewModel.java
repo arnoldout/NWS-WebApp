@@ -45,6 +45,8 @@ public class LoginViewModel {
 		String response = WebService.getInstance().makeAPIPostRequest("login", json);
 		HttpServletResponse res = (HttpServletResponse)Executions.getCurrent().getNativeResponse();
 		Cookie userCookie = new Cookie("UID", response);
+		//age set to 6 years
+		userCookie.setMaxAge(189341712);
 		res.addCookie(userCookie);
 		navigate(response);
 	}
@@ -56,6 +58,8 @@ public class LoginViewModel {
 		String response = WebService.getInstance().makeAPIPostRequest("addProfile", json);
 		HttpServletResponse res = (HttpServletResponse)Executions.getCurrent().getNativeResponse();
 		Cookie userCookie = new Cookie("UID", response);
+		//age set to 6 years
+		userCookie.setMaxAge(189341712);
 		res.addCookie(userCookie);
 		navigate(response);
 		
