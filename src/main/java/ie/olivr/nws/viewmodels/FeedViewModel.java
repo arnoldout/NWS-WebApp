@@ -87,29 +87,42 @@ public class FeedViewModel {
 		}
 	}
 
-	public void navigate(Story st) {
+	public void navigate(final Story st) {
 		Executions.getCurrent().sendRedirect(st.getUri(), "_blank");
 		// remove story from view
-		removeStory(st);
-		WebService.getInstance().makeAPIGetRequest(
-				"readArticle/" + PersonService.getInstance().getLoggedInUser().getId() + "/" + st.get_id());
+		 new Thread()
+	        {
+	            public void run() {
+	            	removeStory(st);
+	        		WebService.getInstance().makeAPIGetRequest(
+	        				"readArticle/" + PersonService.getInstance().getLoggedInUser().getId() + "/" + st.get_id());
 
-		for (int i = 0; i < st.getCategories().size(); i++) {
-			WebService.getInstance().makeAPIGetRequest("addLike/"
-					+ PersonService.getInstance().getLoggedInUser().getId() + "/" + st.getCategories().get(i));
-		}
-		if (!allStories.isEmpty())
-			stories.add(allStories.poll());
-	}
+	        		for (int i = 0; i < st.getCategories().size(); i++) {
+	        			WebService.getInstance().makeAPIGetRequest("addLike/"
+	        					+ PersonService.getInstance().getLoggedInUser().getId() + "/" + st.getCategories().get(i));
+	        		}
+	        		if (!allStories.isEmpty())
+	        			stories.add(allStories.poll());
 
-	public void dislikeStory(Story st) {
+	            }
+	        };
+			}
+
+	public void dislikeStory(final Story st) {
 		pollStory();
-		removeStory(st);
-		for (int i = 0; i < st.getCategories().size(); i++) {
-			WebService.getInstance().makeAPIGetRequest("remLike/"
-					+ PersonService.getInstance().getLoggedInUser().getId() + "/" + st.getCategories().get(i));
-		}
-	}
+		 new Thread()
+	        {
+	            public void run() {
+	            	removeStory(st);
+	        		for (int i = 0; i < st.getCategories().size(); i++) {
+	        			WebService.getInstance().makeAPIGetRequest("remLike/"
+	        					+ PersonService.getInstance().getLoggedInUser().getId() + "/" + st.getCategories().get(i));
+	        		}
+	        		WebService.getInstance().makeAPIGetRequest(
+	        				"readArticle/" + PersonService.getInstance().getLoggedInUser().getId() + "/" + st.get_id());
+	            }
+	        };
+			}
 
 	public List<Story> getStories() {
 		return stories;
