@@ -87,14 +87,13 @@ public class FeedViewModel {
 		}
 	}
 
-	public void navigate(Story st) {
+	public void navigate(final Story st) {
 		 new Thread()
 	        {
 	            public void run() {
 	            	Executions.getCurrent().sendRedirect(st.getUri(), "_blank");
 	            }
 	        };
-		
 		// remove story from view
 		
 		removeStory(st);
