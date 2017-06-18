@@ -98,7 +98,7 @@ public class FeedViewModel {
 							+ PersonService.getInstance().getLoggedInUser().getId() + "/" + st.getCategories().get(i));
 				}
 			}
-		};
+		}.start();
 		// remove story from view
 
 		removeStory(st);
@@ -120,7 +120,7 @@ public class FeedViewModel {
 						"readArticle/" + PersonService.getInstance().getLoggedInUser().getId() + "/" + st.get_id());
 
 			}
-		};
+		}.start();;
 	}
 
 	public List<Story> getStories() {
